@@ -435,209 +435,27 @@ h1{
   .timeline{padding:8px 18px}
   .dress,.survey{padding:28px 20px}
 }
-/* КАЛЕНДАРЬ СВАДЬБЫ */
-.wedding-calendar {
-  max-width: 390px;
-  margin: 35px auto;
-  padding: 28px 25px 30px;
-  text-align: center;
-  color: #806f65;
-  background: rgba(255, 251, 246, 0.72);
-  border: 1px solid rgba(128, 111, 101, 0.35);
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(120, 100, 85, 0.08);
-}
-
-.calendar-month {
-  margin-bottom: 20px;
-  font-family: Georgia, serif;
-  font-size: 32px;
-  font-weight: 400;
-  font-style: italic;
-  color: #806f65;
-}
-
-.calendar-weekdays,
-.calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-
-.calendar-weekdays {
-  margin-bottom: 10px;
-  font-family: Georgia, serif;
-  font-size: 13px;
-  color: #a09289;
-}
-
-.calendar-days {
-  font-family: Georgia, serif;
-  font-size: 17px;
-  color: #75665e;
-}
-
-.calendar-day {
-  position: relative;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.calendar-day.wedding-date::before {
-  content: "";
-  position: absolute;
-  width: 35px;
-  height: 35px;
-  border: 1px solid #b9a195;
-  border-radius: 50%;
-}
-
-.calendar-day.wedding-date {
-  color: #6f5d54;
-  font-weight: 500;
-}
-
-.calendar-caption {
-  margin-top: 25px;
-  font-family: Georgia, serif;
-  font-size: 25px;
-  font-style: italic;
-  color: #806f65;
-.wedding-calendar {
-  max-width: 390px;
-  margin: 35px auto;
-  padding: 28px 25px 30px;
-  text-align: center;
-  color: #806f65;
-  background: rgba(255, 251, 246, 0.72);
-  border: 1px solid rgba(128, 111, 101, 0.35);
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(120, 100, 85, 0.08);
-}
-
-.calendar-month {
-  margin-bottom: 20px;
-  font-family: Georgia, serif;
-  font-size: 32px;
-  font-weight: 400;
-  font-style: italic;
-  color: #806f65;
-}
-
-.calendar-weekdays,
-.calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-
-.calendar-weekdays {
-  margin-bottom: 10px;
-  font-family: Georgia, serif;
-  font-size: 13px;
-  color: #a09289;
-}
-
-.calendar-days {
-  font-family: Georgia, serif;
-  font-size: 17px;
-  color: #75665e;
-}
-
-.calendar-day {
-  position: relative;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.calendar-day.wedding-date::before {
-  content: "";
-  position: absolute;
-  width: 35px;
-  height: 35px;
-  border: 1px solid #b9a195;
-  border-radius: 50%;
-}
-
-.calendar-day.wedding-date {
-  color: #6f5d54;
-  font-weight: 500;
-}
-
-.calendar-caption {
-  margin-top: 25px;
-  font-family: Georgia, serif;
-  font-size: 25px;
-  font-style: italic;
-  color: #806f65;
-  /* Нежная россыпь жемчужных бусин */
-.section:not(:first-of-type)::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-
-   /* =========================================
-   ЕДИНЫЙ ФОН САЙТА
+/* =========================================
+   ИСПРАВЛЕННЫЙ ФОН
    ========================================= */
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
 }
 
 body {
-    background-image: url("background.png");
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-color: #f8f1e9;
+  background: #eee6dc url("background.png") center top / 100% auto repeat-y;
+  background-attachment: scroll;
 }
 
-/* Все разделы используют общий фон сайта */
-.section {
-    background: transparent !important;
+/* Страница прозрачная — фон не дублируется */
+.page {
+  background: transparent;
 }
-
-/* Убираем старые декоративные бусинки */
-.section:not(:first-of-type)::before,
-.section:not(:first-of-type)::after {
-    content: none !important;
-    display: none !important;
-}
-
-/* Убираем старый фон у внутренних блоков */
-.section > * {
-    background-color: transparent;
-}
-
-/* На телефоне фон остаётся красивым и не ломается */
-@media (max-width: 600px) {
-    body {
-        background-size: auto 100%;
-        background-position: center top;
-        background-attachment: scroll;
-    }
-}
-
-.section:not(:first-of-type) {
-  position: relative;
-  overflow: hidden;
-}
-
-.section:not(:first-of-type) > * {
-  position: relative;
-  z-index: 1;
-}
-}    }  </style>
+</style>
 </head>
 <body>
 <main class="page">
