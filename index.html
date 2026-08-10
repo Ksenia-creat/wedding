@@ -575,21 +575,42 @@ h1{
   font-size: 25px;
   font-style: italic;
   color: #806f65;
-  /* Нежная россыпь жемчужных бусинок на фоне */
+  /* Нежная россыпь жемчужных бусин */
 .section:not(:first-of-type)::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
 
-  background-image:
-    radial-gradient(circle at 12% 18%, rgba(190,170,155,0.32) 0 3px, transparent 4px),
-    radial-gradient(circle at 82% 12%, rgba(190,170,155,0.25) 0 2px, transparent 3px),
-    radial-gradient(circle at 91% 42%, rgba(190,170,155,0.30) 0 3px, transparent 4px),
-    radial-gradient(circle at 8% 67%, rgba(190,170,155,0.22) 0 2px, transparent 3px),
-    radial-gradient(circle at 88% 82%, rgba(190,170,155,0.28) 0 3px, transparent 4px),
-    radial-gradient(circle at 24% 91%, rgba(190,170,155,0.20) 0 2px, transparent 3px);
+    background-image:
+        /* крупные жемчужины */
+        radial-gradient(circle at 8% 12%, rgba(255,255,255,0.95) 0 3px, rgba(214,196,181,0.55) 4px, transparent 6px),
+        radial-gradient(circle at 91% 9%, rgba(255,255,255,0.95) 0 2.5px, rgba(214,196,181,0.45) 3.5px, transparent 5px),
+        radial-gradient(circle at 14% 42%, rgba(255,255,255,0.9) 0 2px, rgba(205,185,168,0.45) 3px, transparent 5px),
+        radial-gradient(circle at 87% 37%, rgba(255,255,255,0.95) 0 3px, rgba(214,196,181,0.5) 4px, transparent 6px),
+        radial-gradient(circle at 6% 72%, rgba(255,255,255,0.95) 0 2.5px, rgba(214,196,181,0.45) 3.5px, transparent 5px),
+        radial-gradient(circle at 94% 68%, rgba(255,255,255,0.95) 0 2px, rgba(214,196,181,0.45) 3px, transparent 5px),
+
+        /* мелкие жемчужины */
+        radial-gradient(circle at 22% 18%, rgba(196,174,157,0.38) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 30% 23%, rgba(196,174,157,0.32) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 38% 29%, rgba(196,174,157,0.28) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 46% 34%, rgba(196,174,157,0.25) 0 1.5px, transparent 2.5px),
+
+        radial-gradient(circle at 78% 20%, rgba(196,174,157,0.34) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 71% 25%, rgba(196,174,157,0.30) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 65% 30%, rgba(196,174,157,0.27) 0 1.5px, transparent 2.5px),
+
+        radial-gradient(circle at 18% 58%, rgba(196,174,157,0.30) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 25% 63%, rgba(196,174,157,0.27) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 32% 68%, rgba(196,174,157,0.24) 0 1.5px, transparent 2.5px),
+
+        radial-gradient(circle at 82% 57%, rgba(196,174,157,0.30) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 75% 62%, rgba(196,174,157,0.27) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 68% 67%, rgba(196,174,157,0.24) 0 1.5px, transparent 2.5px);
+
+    background-repeat: no-repeat;
 }
 
 .section:not(:first-of-type) {
