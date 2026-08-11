@@ -858,8 +858,6 @@ h1 {
     Диана & Никита
   </div>
 
-  <!-- Таймер -->
-
   <div class="countdown">
 
     <div class="countdown-item">
@@ -931,8 +929,6 @@ h1 {
 </svg>
 
 
-<!-- СБОР ГОСТЕЙ -->
-
 <div class="timeline-item left">
 
 <div class="timeline-content">
@@ -970,8 +966,6 @@ h1 {
 </div>
 
 
-<!-- РЕГИСТРАЦИЯ -->
-
 <div class="timeline-item right">
 
 <div class="timeline-icon rings">
@@ -996,8 +990,6 @@ h1 {
 
 </div>
 
-
-<!-- ФУРШЕТ -->
 
 <div class="timeline-item left">
 
@@ -1039,8 +1031,6 @@ h1 {
 </div>
 
 
-<!-- БАНКЕТ -->
-
 <div class="timeline-item right">
 
 <div class="timeline-icon">
@@ -1065,8 +1055,6 @@ h1 {
 
 </div>
 
-
-<!-- ОКОНЧАНИЕ -->
 
 <div class="timeline-item left">
 
@@ -1141,9 +1129,6 @@ h1 {
 
 <form id="guestForm" class="guest-form">
 
-
-<!-- ФИО -->
-
 <label>
 
   1. Укажите, пожалуйста, ваше ФИО
@@ -1157,8 +1142,6 @@ h1 {
 
 </label>
 
-
-<!-- ПРИСУТСТВИЕ -->
 
 <fieldset class="choice-group">
 
@@ -1213,8 +1196,6 @@ h1 {
 
 </fieldset>
 
-
-<!-- НАПИТКИ -->
 
 <fieldset class="choice-group">
 
@@ -1319,8 +1300,6 @@ h1 {
 </fieldset>
 
 
-<!-- ГОРЯЧЕЕ -->
-
 <fieldset class="choice-group">
 
 <legend>
@@ -1360,8 +1339,6 @@ h1 {
 
 </fieldset>
 
-
-<!-- ПОЖЕЛАНИЯ -->
 
 <div class="food-note">
 
@@ -1503,8 +1480,6 @@ h1 {
 <div class="contacts">
 
 
-<!-- ДИАНА -->
-
 <div class="contact">
 
 <h3>
@@ -1530,8 +1505,6 @@ h1 {
 
 </div>
 
-
-<!-- НИКИТА -->
 
 <div class="contact">
 
@@ -1587,7 +1560,6 @@ const weddingDate = new Date("2026-10-10T14:00:00");
 function updateCountdown() {
 
   const now = new Date();
-
   const difference = weddingDate - now;
 
   if (difference <= 0) {
@@ -1643,8 +1615,19 @@ setInterval(updateCountdown, 1000);
 <script>
 
 /*
-  ВАЖНО:
-  Это НОВЫЙ URL опубликованного веб-приложения Google Apps Script.
+====================================================
+ GOOGLE APPS SCRIPT
+====================================================
+
+ ВАЖНО:
+ Здесь должен быть именно ЧИСТЫЙ URL веб-приложения.
+
+ НЕЛЬЗЯ:
+ "[https://script.google.com/...](https://script.google.com/...)"
+
+ НУЖНО:
+ "https://script.google.com/..."
+====================================================
 */
 
 const FORM_ENDPOINT =
@@ -1662,6 +1645,11 @@ if (form) {
 
     event.preventDefault();
 
+
+    /*
+      Проверяем обязательные поля.
+    */
+
     if (!form.checkValidity()) {
 
       form.reportValidity();
@@ -1669,6 +1657,10 @@ if (form) {
       return;
     }
 
+
+    /*
+      Блокируем кнопку на время отправки.
+    */
 
     submitButton.disabled = true;
     submitButton.style.opacity = "0.6";
@@ -1678,122 +1670,179 @@ if (form) {
 
 
     /*
-      Собираем данные формы.
+      Создаём FormData из анкеты.
     */
 
     const formData = new FormData(form);
 
 
-    const payload = {
+    /*
+      Получаем значения.
+    */
 
-      full_name:
-        formData.get("full_name") || "",
+    const fullName =
+      formData.get("full_name") || "";
 
-      attendance:
-        formData.get("attendance") || "",
+    const attendance =
+      formData.get("attendance") || "";
 
-      drinks:
-        formData.getAll("drinks"),
+    const drinks =
+      formData.getAll("drinks");
 
-      hot_dish:
-        formData.get("hot_dish") || "",
+    const hotDish =
+      formData.get("hot_dish") || "";
 
-      food_preferences:
-        formData.get("food_preferences") || ""
-
-    };
+    const foodPreferences =
+      formData.get("food_preferences") || "";
 
 
     /*
       Создаём скрытый iframe.
-      Страница сайта не будет переходить
-      на страницу Google Apps Script.
+
+      Он нужен для того, чтобы POST-запрос
+      ушёл в Google Apps Script,
+      но сам сайт никуда не переходил.
     */
 
-    const frameName = "googleFormTarget";
+    const frameName =
+      "googleFormTarget_" + Date.now();
 
-    let iframe = document.getElementById(frameName);
+    const iframe =
+      document.createElement("iframe");
+
+    iframe.name = frameName;
+    iframe.style.display = "none";
+
+    document.body.appendChild(iframe);
 
 
-    if (!iframe) {
+    /*
+      Создаём настоящую HTML-форму для POST.
+    */
 
-      iframe = document.createElement("iframe");
+    const sender =
+      document.createElement("form");
 
-      iframe.id = frameName;
-      iframe.name = frameName;
+    sender.method = "POST";
 
-      iframe.style.display = "none";
+    sender.action =
+      FORM_ENDPOINT;
 
-      document.body.appendChild(iframe);
+    sender.target =
+      frameName;
+
+    sender.enctype =
+      "application/x-www-form-urlencoded";
+
+    sender.style.display =
+      "none";
+
+
+    /*
+      Функция добавления скрытого поля.
+    */
+
+    function addField(name, value) {
+
+      const input =
+        document.createElement("input");
+
+      input.type = "hidden";
+      input.name = name;
+      input.value = value == null ? "" : value;
+
+      sender.appendChild(input);
+    }
+
+
+    /*
+      ФИО
+    */
+
+    addField(
+      "full_name",
+      fullName
+    );
+
+
+    /*
+      ПРИСУТСТВИЕ
+    */
+
+    addField(
+      "attendance",
+      attendance
+    );
+
+
+    /*
+      НАПИТКИ
+
+      Каждый выбранный напиток
+      отправляется отдельным параметром drinks.
+
+      Например:
+
+      drinks = Красное вино
+      drinks = Шампанское
+      drinks = Безалкогольные напитки
+
+      В Google Apps Script это можно получить
+      через e.parameters.drinks.
+    */
+
+    if (drinks.length > 0) {
+
+      drinks.forEach(function(drink) {
+
+        addField(
+          "drinks",
+          drink
+        );
+
+      });
+
+    }
+
+    else {
+
+      addField(
+        "drinks",
+        ""
+      );
 
     }
 
 
     /*
-      Создаём временную форму для POST-запроса.
+      ГОРЯЧЕЕ
     */
 
-    const sender = document.createElement("form");
-
-    sender.method = "POST";
-    sender.action = FORM_ENDPOINT;
-    sender.target = frameName;
-    sender.enctype = "application/x-www-form-urlencoded";
-
-    sender.style.display = "none";
+    addField(
+      "hot_dish",
+      hotDish
+    );
 
 
     /*
-      Добавляем данные.
+      ПОЖЕЛАНИЯ
     */
 
-    Object.keys(payload).forEach(function(key) {
+    addField(
+      "food_preferences",
+      foodPreferences
+    );
 
-      const value = payload[key];
 
-
-      /*
-        Напитки являются массивом.
-        Каждый выбранный напиток отправляется
-        отдельным параметром с именем drinks.
-      */
-
-      if (Array.isArray(value)) {
-
-        value.forEach(function(item) {
-
-          const input = document.createElement("input");
-
-          input.type = "hidden";
-          input.name = key;
-          input.value = item;
-
-          sender.appendChild(input);
-
-        });
-
-      }
-
-      else {
-
-        const input = document.createElement("input");
-
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-
-        sender.appendChild(input);
-
-      }
-
-    });
-
+    /*
+      Добавляем форму на страницу.
+    */
 
     document.body.appendChild(sender);
 
 
     /*
-      Отправляем POST-запрос в Google Apps Script.
+      Отправляем POST-запрос.
     */
 
     try {
@@ -1804,7 +1853,10 @@ if (form) {
 
     catch (error) {
 
-      console.error("Ошибка отправки:", error);
+      console.error(
+        "Ошибка отправки анкеты:",
+        error
+      );
 
       status.textContent =
         "Не удалось отправить анкету. Попробуйте ещё раз ♡";
@@ -1814,6 +1866,7 @@ if (form) {
       submitButton.textContent = "Отправить анкету";
 
       sender.remove();
+      iframe.remove();
 
       return;
 
@@ -1821,20 +1874,12 @@ if (form) {
 
 
     /*
-      Удаляем временную форму.
-    */
+      После отправки показываем пользователю
+      сообщение об успешной отправке.
 
-    setTimeout(function() {
-
-      if (sender.parentNode) {
-        sender.remove();
-      }
-
-    }, 2000);
-
-
-    /*
-      Показываем сообщение после отправки.
+      Небольшая задержка нужна потому,
+      что Google Apps Script обрабатывает POST
+      отдельно от страницы сайта.
     */
 
     setTimeout(function() {
@@ -1846,9 +1891,23 @@ if (form) {
 
       submitButton.disabled = false;
       submitButton.style.opacity = "1";
-      submitButton.textContent = "Отправить анкету";
+      submitButton.textContent =
+        "Отправить анкету";
 
-    }, 2500);
+
+      /*
+        Удаляем технические элементы.
+      */
+
+      if (sender.parentNode) {
+        sender.remove();
+      }
+
+      if (iframe.parentNode) {
+        iframe.remove();
+      }
+
+    }, 2000);
 
   });
 
