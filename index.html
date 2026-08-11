@@ -1643,21 +1643,12 @@ setInterval(updateCountdown, 1000);
 <script>
 
 /*
-  =====================================================
-  GOOGLE APPS SCRIPT
-  =====================================================
-
   ВАЖНО:
-  URL ниже должен быть именно таким:
-  https://script.google.com/macros/s/....../exec
-
-  Без квадратных скобок.
-  Без круглых скобок.
-  Без Markdown.
+  Это НОВЫЙ URL опубликованного веб-приложения Google Apps Script.
 */
 
 const FORM_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbyAj_FkEaPxgboewIQF1akWhDKQV9E1khIIjUMgArmjSvTiJ3cXcczZPx_nPu4bW5_o/exec";
+  "https://script.google.com/macros/s/AKfycbwkL57Vb0X-e3pfUwBY5kGpnQmzhvpI08bLXvtfmh-UyZ7M9BbbJB-Jj44H45P9g-c/exec";
 
 
 const form = document.getElementById("guestForm");
@@ -1665,20 +1656,11 @@ const status = document.getElementById("formStatus");
 const submitButton = document.getElementById("submitButton");
 
 
-/*
-  Проверяем, что форма существует.
-*/
-
 if (form) {
 
   form.addEventListener("submit", function(event) {
 
     event.preventDefault();
-
-
-    /*
-      Проверяем обязательные поля.
-    */
 
     if (!form.checkValidity()) {
 
@@ -1687,10 +1669,6 @@ if (form) {
       return;
     }
 
-
-    /*
-      Защита от повторного нажатия.
-    */
 
     submitButton.disabled = true;
     submitButton.style.opacity = "0.6";
@@ -1728,9 +1706,8 @@ if (form) {
 
     /*
       Создаём скрытый iframe.
-
-      Google Apps Script получит POST-запрос,
-      а пользователь останется на нашем сайте.
+      Страница сайта не будет переходить
+      на страницу Google Apps Script.
     */
 
     const frameName = "googleFormTarget";
@@ -1753,7 +1730,7 @@ if (form) {
 
 
     /*
-      Создаём временную HTML-форму.
+      Создаём временную форму для POST-запроса.
     */
 
     const sender = document.createElement("form");
@@ -1761,12 +1738,13 @@ if (form) {
     sender.method = "POST";
     sender.action = FORM_ENDPOINT;
     sender.target = frameName;
+    sender.enctype = "application/x-www-form-urlencoded";
 
     sender.style.display = "none";
 
 
     /*
-      Добавляем данные в POST-запрос.
+      Добавляем данные.
     */
 
     Object.keys(payload).forEach(function(key) {
@@ -1775,8 +1753,9 @@ if (form) {
 
 
       /*
-        Если это массив напитков,
-        отправляем каждый напиток отдельно.
+        Напитки являются массивом.
+        Каждый выбранный напиток отправляется
+        отдельным параметром с именем drinks.
       */
 
       if (Array.isArray(value)) {
@@ -1814,7 +1793,7 @@ if (form) {
 
 
     /*
-      Отправляем данные.
+      Отправляем POST-запрос в Google Apps Script.
     */
 
     try {
@@ -1837,6 +1816,7 @@ if (form) {
       sender.remove();
 
       return;
+
     }
 
 
@@ -1854,7 +1834,7 @@ if (form) {
 
 
     /*
-      Сообщение пользователю.
+      Показываем сообщение после отправки.
     */
 
     setTimeout(function() {
