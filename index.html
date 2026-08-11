@@ -1609,309 +1609,138 @@ setInterval(updateCountdown, 1000);
 
 
 <!-- =====================================
-     GOOGLE ТАБЛИЦА / АНКЕТА
+     ОТПРАВКА АНКЕТЫ В GOOGLE ТАБЛИЦУ
 ===================================== -->
 
 <script>
-
-/*
-====================================================
- GOOGLE APPS SCRIPT
-====================================================
-
- ВАЖНО:
- Здесь должен быть именно ЧИСТЫЙ URL веб-приложения.
-
- НЕЛЬЗЯ:
- "[https://script.google.com/...](https://script.google.com/...)"
-
- НУЖНО:
- "https://script.google.com/..."
-====================================================
-*/
 
 const FORM_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbwkL57Vb0X-e3pfUwBY5kGpnQmzhvpI08bLXvtfmh-UyZ7M9BbbJB-Jj44H45P9g-c/exec";
 
 
-const form = document.getElementById("guestForm");
-const status = document.getElementById("formStatus");
+const guestForm = document.getElementById("guestForm");
+const formStatus = document.getElementById("formStatus");
 const submitButton = document.getElementById("submitButton");
 
 
-if (form) {
+guestForm.addEventListener("submit", async function(event) {
 
-  form.addEventListener("submit", function(event) {
+  event.preventDefault();
 
-    event.preventDefault();
 
+  // Проверяем обязательные поля
+  if (!guestForm.checkValidity()) {
+    guestForm.reportValidity();
+    return;
+  }
 
-    /*
-      Проверяем обязательные поля.
-    */
 
-    if (!form.checkValidity()) {
+  // Блокируем кнопку
+  submitButton.disabled = true;
+  submitButton.style.opacity = "0.6";
+  submitButton.textContent = "Отправляем...";
 
-      form.reportValidity();
+  formStatus.textContent = "";
 
-      return;
-    }
 
+  // Собираем данные формы
+  const formData = new FormData(guestForm);
 
-    /*
-      Блокируем кнопку на время отправки.
-    */
 
-    submitButton.disabled = true;
-    submitButton.style.opacity = "0.6";
-    submitButton.textContent = "Отправляем...";
+  // Создаём URL-кодированные данные
+  const body = new URLSearchParams();
 
-    status.textContent = "";
 
+  body.append(
+    "full_name",
+    formData.get("full_name") || ""
+  );
 
-    /*
-      Создаём FormData из анкеты.
-    */
 
-    const formData = new FormData(form);
+  body.append(
+    "attendance",
+    formData.get("attendance") || ""
+  );
 
 
-    /*
-      Получаем значения.
-    */
+  // Все выбранные напитки
+  const drinks = formData.getAll("drinks");
 
-    const fullName =
-      formData.get("full_name") || "";
-
-    const attendance =
-      formData.get("attendance") || "";
-
-    const drinks =
-      formData.getAll("drinks");
-
-    const hotDish =
-      formData.get("hot_dish") || "";
-
-    const foodPreferences =
-      formData.get("food_preferences") || "";
-
-
-    /*
-      Создаём скрытый iframe.
-
-      Он нужен для того, чтобы POST-запрос
-      ушёл в Google Apps Script,
-      но сам сайт никуда не переходил.
-    */
-
-    const frameName =
-      "googleFormTarget_" + Date.now();
-
-    const iframe =
-      document.createElement("iframe");
-
-    iframe.name = frameName;
-    iframe.style.display = "none";
-
-    document.body.appendChild(iframe);
-
-
-    /*
-      Создаём настоящую HTML-форму для POST.
-    */
-
-    const sender =
-      document.createElement("form");
-
-    sender.method = "POST";
-
-    sender.action =
-      FORM_ENDPOINT;
-
-    sender.target =
-      frameName;
-
-    sender.enctype =
-      "application/x-www-form-urlencoded";
-
-    sender.style.display =
-      "none";
-
-
-    /*
-      Функция добавления скрытого поля.
-    */
-
-    function addField(name, value) {
-
-      const input =
-        document.createElement("input");
-
-      input.type = "hidden";
-      input.name = name;
-      input.value = value == null ? "" : value;
-
-      sender.appendChild(input);
-    }
-
-
-    /*
-      ФИО
-    */
-
-    addField(
-      "full_name",
-      fullName
-    );
-
-
-    /*
-      ПРИСУТСТВИЕ
-    */
-
-    addField(
-      "attendance",
-      attendance
-    );
-
-
-    /*
-      НАПИТКИ
-
-      Каждый выбранный напиток
-      отправляется отдельным параметром drinks.
-
-      Например:
-
-      drinks = Красное вино
-      drinks = Шампанское
-      drinks = Безалкогольные напитки
-
-      В Google Apps Script это можно получить
-      через e.parameters.drinks.
-    */
-
-    if (drinks.length > 0) {
-
-      drinks.forEach(function(drink) {
-
-        addField(
-          "drinks",
-          drink
-        );
-
-      });
-
-    }
-
-    else {
-
-      addField(
-        "drinks",
-        ""
-      );
-
-    }
-
-
-    /*
-      ГОРЯЧЕЕ
-    */
-
-    addField(
-      "hot_dish",
-      hotDish
-    );
-
-
-    /*
-      ПОЖЕЛАНИЯ
-    */
-
-    addField(
-      "food_preferences",
-      foodPreferences
-    );
-
-
-    /*
-      Добавляем форму на страницу.
-    */
-
-    document.body.appendChild(sender);
-
-
-    /*
-      Отправляем POST-запрос.
-    */
-
-    try {
-
-      sender.submit();
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "Ошибка отправки анкеты:",
-        error
-      );
-
-      status.textContent =
-        "Не удалось отправить анкету. Попробуйте ещё раз ♡";
-
-      submitButton.disabled = false;
-      submitButton.style.opacity = "1";
-      submitButton.textContent = "Отправить анкету";
-
-      sender.remove();
-      iframe.remove();
-
-      return;
-
-    }
-
-
-    /*
-      После отправки показываем пользователю
-      сообщение об успешной отправке.
-
-      Небольшая задержка нужна потому,
-      что Google Apps Script обрабатывает POST
-      отдельно от страницы сайта.
-    */
-
-    setTimeout(function() {
-
-      form.reset();
-
-      status.textContent =
-        "Спасибо! Ваша анкета отправлена ♡";
-
-      submitButton.disabled = false;
-      submitButton.style.opacity = "1";
-      submitButton.textContent =
-        "Отправить анкету";
-
-
-      /*
-        Удаляем технические элементы.
-      */
-
-      if (sender.parentNode) {
-        sender.remove();
-      }
-
-      if (iframe.parentNode) {
-        iframe.remove();
-      }
-
-    }, 2000);
-
+  drinks.forEach(function(drink) {
+    body.append("drinks", drink);
   });
 
-}
+
+  body.append(
+    "hot_dish",
+    formData.get("hot_dish") || ""
+  );
+
+
+  body.append(
+    "food_preferences",
+    formData.get("food_preferences") || ""
+  );
+
+
+  try {
+
+    /*
+      Отправляем данные в Google Apps Script.
+
+      no-cors нужен потому, что сайт и Google Apps Script
+      находятся на разных доменах.
+    */
+
+    await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: body.toString()
+    });
+
+
+    /*
+      При no-cors браузер не позволяет прочитать ответ
+      Google Apps Script.
+
+      Поэтому после успешной отправки запроса
+      показываем пользователю сообщение.
+    */
+
+    guestForm.reset();
+
+    formStatus.textContent =
+      "Спасибо! Ваша анкета отправлена ♡";
+
+    formStatus.style.color = "#806c52";
+
+
+  } catch (error) {
+
+    console.error(
+      "Ошибка отправки анкеты:",
+      error
+    );
+
+
+    formStatus.textContent =
+      "Не удалось отправить анкету. Попробуйте ещё раз ♡";
+
+    formStatus.style.color = "#a05f5f";
+
+
+  } finally {
+
+    submitButton.disabled = false;
+    submitButton.style.opacity = "1";
+    submitButton.textContent = "Отправить анкету";
+
+  }
+
+});
 
 </script>
 
