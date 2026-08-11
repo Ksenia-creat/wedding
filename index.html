@@ -24,16 +24,17 @@ body{
   font-weight:300;
 }
 .page{
-    min-height:100vh;
-    padding:28px 14px 70px;
-    background: transparent;
-    background-attachment: scroll;
+  min-height:100vh;
+  padding:28px 14px 70px;
+  background:
+    linear-gradient(rgba(250,247,242,.08),rgba(250,247,242,.08)),
+    url("background.png") center top/cover fixed;
 }
 .card{
   width:min(820px,100%);
   margin:auto;
   text-align:center;
-  padding:150px 38px 65px;
+  padding:50px 38px 65px;
 }
 .eyebrow{
   letter-spacing:.31em;
@@ -435,30 +436,6 @@ h1{
   .timeline{padding:8px 18px}
   .dress,.survey{padding:28px 20px}
 }
-/* =========================================
-   ИСПРАВЛЕННЫЙ ФОН
-   ========================================= */
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-}
-
-body {
-    background-color: #eee6dc;
-    background-image: url("background.png");
-    background-position: center top;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-}
-
-/* Страница прозрачная — фон не дублируется */
-.page {
-  background: transparent;
-}
 </style>
 </head>
 <body>
@@ -639,188 +616,7 @@ body {
       </form>
     </div>
   </section>
-<div class="wedding-calendar">
 
-  <div class="calendar-month">Октябрь</div>
-
-  <div class="calendar-weekdays">
-    <div>ПН</div>
-    <div>ВТ</div>
-    <div>СР</div>
-    <div>ЧТ</div>
-    <div>ПТ</div>
-    <div>СБ</div>
-    <div>ВС</div>
-  </div>
-
-  <div class="calendar-days">
-
-    <div class="calendar-day"></div>
-    <div class="calendar-day"></div>
-    <div class="calendar-day"></div>
-
-    <div class="calendar-day">1</div>
-    <div class="calendar-day">2</div>
-    <div class="calendar-day">3</div>
-    <div class="calendar-day">4</div>
-
-    <div class="calendar-day">5</div>
-    <div class="calendar-day">6</div>
-    <div class="calendar-day">7</div>
-    <div class="calendar-day">8</div>
-    <div class="calendar-day">9</div>
-    <div class="calendar-day wedding-date">10</div>
-    <div class="calendar-day">11</div>
-
-    <div class="calendar-day">12</div>
-    <div class="calendar-day">13</div>
-    <div class="calendar-day">14</div>
-    <div class="calendar-day">15</div>
-    <div class="calendar-day">16</div>
-    <div class="calendar-day">17</div>
-    <div class="calendar-day">18</div>
-
-    <div class="calendar-day">19</div>
-    <div class="calendar-day">20</div>
-    <div class="calendar-day">21</div>
-    <div class="calendar-day">22</div>
-    <div class="calendar-day">23</div>
-    <div class="calendar-day">24</div>
-    <div class="calendar-day">25</div>
-
-    <div class="calendar-day">26</div>
-    <div class="calendar-day">27</div>
-    <div class="calendar-day">28</div>
-    <div class="calendar-day">29</div>
-    <div class="calendar-day">30</div>
-    <div class="calendar-day">31</div>
-    <div class="calendar-day"></div>
-
-  </div>
-
-  <div class="calendar-caption">Ждём Вас!</div>
-
-</div>
-  <!-- Таймер -->
-<div class="countdown">
-  <div class="countdown-item">
-    <span id="days">00</span>
-    <small>дней</small>
-  </div>
-
-  <div class="countdown-separator">:</div>
-
-  <div class="countdown-item">
-    <span id="hours">00</span>
-    <small>часов</small>
-  </div>
-
-  <div class="countdown-separator">:</div>
-
-  <div class="countdown-item">
-    <span id="minutes">00</span>
-    <small>минут</small>
-  </div>
-
-  <div class="countdown-separator">:</div>
-
-  <div class="countdown-item">
-    <span id="seconds">00</span>
-    <small>секунд</small>
-  </div>
-</div>
-
-<style>
-.countdown {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 35px auto;
-  color: #78675d;
-  font-family: Georgia, "Times New Roman", serif;
-}
-
-.countdown-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 55px;
-}
-
-.countdown-item span {
-  font-size: 30px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  line-height: 1;
-}
-
-.countdown-item small {
-  margin-top: 8px;
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: #a18f84;
-}
-
-.countdown-separator {
-  font-size: 26px;
-  margin-bottom: 17px;
-  color: #b09d91;
-}
-
-@media (max-width: 480px) {
-  .countdown {
-    gap: 4px;
-    margin: 30px auto;
-  }
-
-  .countdown-item {
-    min-width: 48px;
-  }
-
-  .countdown-item span {
-    font-size: 25px;
-  }
-
-  .countdown-item small {
-    font-size: 9px;
-  }
-
-  .countdown-separator {
-    font-size: 22px;
-  }
-}
-</style>
-
-<script>
-const weddingDate = new Date("2026-10-10T14:00:00");
- 
-function updateCountdown() {
-  const now = new Date();
-  const difference = weddingDate - now;
-
-  if (difference <= 0) {
-    document.getElementById("days").textContent = "00";
-    document.getElementById("hours").textContent = "00";
-    document.getElementById("minutes").textContent = "00";
-    document.getElementById("seconds").textContent = "00";
-    return;
-  }
-
-  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((difference / (1000 * 60)) % 60);
-  const seconds = Math.floor((difference / 1000) % 60);
-
-  document.getElementById("days").textContent = String(days).padStart(2, "0");
-  document.getElementById("hours").textContent = String(hours).padStart(2, "0");
-  document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
-  document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
-</script>
   <section class="section">
     <h2>Контакты</h2>
     <p class="section-sub">Если у вас возникнут вопросы, вы всегда можете обратиться к жениху или невесте.</p>
