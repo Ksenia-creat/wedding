@@ -1623,124 +1623,163 @@ const formStatus = document.getElementById("formStatus");
 const submitButton = document.getElementById("submitButton");
 
 
-guestForm.addEventListener("submit", async function(event) {
+if (guestForm) {
 
-  event.preventDefault();
+  guestForm.addEventListener("submit", async function(event) {
 
+    event.preventDefault();
 
-  // Проверяем обязательные поля
-  if (!guestForm.checkValidity()) {
-    guestForm.reportValidity();
-    return;
-  }
+    /* Проверяем обязательные поля */
 
-
-  // Блокируем кнопку
-  submitButton.disabled = true;
-  submitButton.style.opacity = "0.6";
-  submitButton.textContent = "Отправляем...";
-
-  formStatus.textContent = "";
+    if (!guestForm.checkValidity()) {
+      guestForm.reportValidity();
+      return;
+    }
 
 
-  // Собираем данные формы
-  const formData = new FormData(guestForm);
+    /* Блокируем кнопку */
+
+    submitButton.disabled = true;
+    submitButton.style.opacity = "0.6";
+    submitButton.textContent = "Отправляем...";
+
+    formStatus.textContent = "";
+    formStatus.style.color = "";
 
 
-  // Создаём URL-кодированные данные
-  const body = new URLSearchParams();
+    try {
+
+      /*
+       * Создаём данные для отправки.
+       * Формат полностью соответствует
+       * e.parameter / e.parameters в Apps Script.
+       */
+
+      const data = new URLSearchParams();
 
 
-  body.append(
-    "full_name",
-    formData.get("full_name") || ""
-  );
+      /* ФИО */
+
+      data.append(
+        "full_name",
+        guestForm.elements["full_name"].value.trim()
+      );
 
 
-  body.append(
-    "attendance",
-    formData.get("attendance") || ""
-  );
+      /* Присутствие */
+
+      const attendance =
+        guestForm.querySelector(
+          'input[name="attendance"]:checked'
+        );
+
+      data.append(
+        "attendance",
+        attendance ? attendance.value : ""
+      );
 
 
-  // Все выбранные напитки
-  const drinks = formData.getAll("drinks");
+      /* Напитки */
 
-  drinks.forEach(function(drink) {
-    body.append("drinks", drink);
-  });
+      const drinks =
+        guestForm.querySelectorAll(
+          'input[name="drinks"]:checked'
+        );
 
+      drinks.forEach(function(drink) {
 
-  body.append(
-    "hot_dish",
-    formData.get("hot_dish") || ""
-  );
+        data.append(
+          "drinks",
+          drink.value
+        );
 
-
-  body.append(
-    "food_preferences",
-    formData.get("food_preferences") || ""
-  );
+      });
 
 
-  try {
+      /* Горячее блюдо */
 
-    /*
-      Отправляем данные в Google Apps Script.
+      const hotDish =
+        guestForm.querySelector(
+          'input[name="hot_dish"]:checked'
+        );
 
-      no-cors нужен потому, что сайт и Google Apps Script
-      находятся на разных доменах.
-    */
-
-    await fetch(FORM_ENDPOINT, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-      },
-      body: body.toString()
-    });
+      data.append(
+        "hot_dish",
+        hotDish ? hotDish.value : ""
+      );
 
 
-    /*
-      При no-cors браузер не позволяет прочитать ответ
-      Google Apps Script.
+      /* Пожелания по еде */
 
-      Поэтому после успешной отправки запроса
-      показываем пользователю сообщение.
-    */
-
-    guestForm.reset();
-
-    formStatus.textContent =
-      "Спасибо! Ваша анкета отправлена ♡";
-
-    formStatus.style.color = "#806c52";
+      data.append(
+        "food_preferences",
+        guestForm.elements["food_preferences"].value.trim()
+      );
 
 
-  } catch (error) {
+      /*
+       * Отправляем POST в Google Apps Script.
+       *
+       * mode: no-cors нужен потому, что сайт находится
+       * на GitHub Pages, а Google Apps Script — на другом домене.
+       *
+       * ВАЖНО:
+       * no-cors не позволяет прочитать ответ Google,
+       * поэтому после успешной отправки запроса
+       * показываем сообщение пользователю.
+       */
 
-    console.error(
-      "Ошибка отправки анкеты:",
-      error
-    );
+      await fetch(
+        FORM_ENDPOINT,
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type":
+              "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: data.toString()
+        }
+      );
 
 
-    formStatus.textContent =
-      "Не удалось отправить анкету. Попробуйте ещё раз ♡";
+      /*
+       * Если fetch не выбросил ошибку,
+       * запрос отправлен.
+       */
 
-    formStatus.style.color = "#a05f5f";
+      guestForm.reset();
+
+      formStatus.textContent =
+        "Спасибо! Ваша анкета отправлена ♡";
+
+      formStatus.style.color = "#806c52";
 
 
-  } finally {
+    } catch (error) {
+
+      console.error(
+        "Ошибка отправки анкеты:",
+        error
+      );
+
+      formStatus.textContent =
+        "Не удалось отправить анкету. Попробуйте ещё раз ♡";
+
+      formStatus.style.color = "#a05f5f";
+
+    }
+
+
+    /* Возвращаем кнопку */
 
     submitButton.disabled = false;
     submitButton.style.opacity = "1";
     submitButton.textContent = "Отправить анкету";
 
-  }
+  });
 
-});
+}
 
 </script>
 
